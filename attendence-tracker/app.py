@@ -66,19 +66,39 @@ def create_account():
         username = request.form['username']
         password = request.form['password']
         role = request.form['role']
+        
+        # Check if username is empty
+        if not username or not password:
+            error = "Username and password are required"
+            return render_template('create_account.html', error=error)
+            
         conn = sqlite3.connect(DB_NAME)
         c = conn.cursor()
+        
         try:
-            c.execute('INSERT INTO users (username, password, role) VALUES (?, ?, ?)', (username, password, role))
+            # First check if username already exists
+            c.execute('SELECT username FROM users WHERE username=?', (username,))
+            if c.fetchone():
+                error = "Username already exists. Please choose another."
+                conn.close()
+                return render_template('create_account.html', error=error)
+                
+            # Insert new user
+            c.execute('INSERT INTO users (username, password, role) VALUES (?, ?, ?)', 
+                     (username, password, role))
+            
+            # If role is student, also add to students table
             if role == 'student':
-                # Add to students table if not already present
                 c.execute('INSERT OR IGNORE INTO students (name) VALUES (?)', (username,))
+            
             conn.commit()
             conn.close()
             return redirect(url_for('login'))
-        except sqlite3.IntegrityError:
-            error = "Username already exists. Please choose another."
+            
+        except sqlite3.Error as e:
+            error = f"Database error: {str(e)}"
             conn.close()
+            
     return render_template('create_account.html', error=error)
 
 @app.route('/logout')
