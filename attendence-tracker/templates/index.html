@@ -2,38 +2,67 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Student Attendance Tracker</title>
+    <title>TA Dashboard - Student Attendance Tracker</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <script defer src="{{ url_for('static', filename='script.js') }}"></script>
 </head>
 <body>
-    <h1>Student Attendance Tracker</h1>
+    <h1>Teaching Assistant Dashboard</h1>
     <a href="{{ url_for('logout') }}">Logout</a>
     
     <section>
-        <h2>Add Student</h2>
+        <h2>Create Course</h2>
         <form method="POST">
-            <input type="hidden" name="form_type" value="add_student">
-            <input type="text" name="student_name" placeholder="Student Name" required>
-            <button type="submit">Add Student</button>
+            <input type="text" name="course_name" placeholder="Course Name" required>
+            <input type="text" name="course_code" placeholder="Course Code" required>
+            <button type="submit">Create Course</button>
+        </form>
+    </section>
+    
+    <section>
+        <h2>Enroll Student in Course</h2>
+        <form method="POST">
+            <select name="student_id" required>
+                <option value="">-- Select student --</option>
+                {% for s in all_students %}
+                <option value="{{ s[0] }}">{{ s[1] }}</option>
+                {% endfor %}
+            </select>
+            <select name="course_id" required>
+                <option value="">-- Select course --</option>
+                {% for c in courses %}
+                <option value="{{ c[0] }}">{{ c[1] }} ({{ c[2] }})</option>
+                {% endfor %}
+            </select>
+            <button type="submit" name="enroll_student">Enroll Student</button>
         </form>
     </section>
     
     <section>
         <h2>Mark Attendance</h2>
+        <!-- course selector (GET) to load enrolled students -->
+        <form method="GET">
+            <label>Select course:
+                <select name="selected_course" onchange="this.form.submit()">
+                    <option value="">-- Select course --</option>
+                    {% for c in courses %}
+                    <option value="{{ c[0] }}" {% if selected_course and selected_course == (c[0]|string) %}selected{% endif %}>{{ c[1] }} ({{ c[2] }})</option>
+                    {% endfor %}
+                </select>
+            </label>
+        </form>
+
+        {% if selected_course %}
         <form method="POST">
-            <input type="hidden" name="form_type" value="mark_attendance">
+            <input type="hidden" name="selected_course" value="{{ selected_course }}">
             <label>Date: <input type="date" name="attendance_date" required></label>
             <table>
+                <tr><th>Name</th><th>Status</th></tr>
+                {% for s in students %}
                 <tr>
-                    <th>Name</th><th>Status</th>
-                </tr>
-                {% for student in students %}
-                <tr>
-                    <td>{{ student[1] }}</td>
+                    <td>{{ s[1] }}</td>
                     <td>
-                        <input type="hidden" name="student_id" value="{{ student[0] }}">
-                        <select name="status_{{ student[0] }}">
+                        <input type="hidden" name="student_id" value="{{ s[0] }}">
+                        <select name="status_{{ s[0] }}">
                             <option value="Present">Present</option>
                             <option value="Absent">Absent</option>
                         </select>
@@ -43,22 +72,17 @@
             </table>
             <button type="submit">Save Attendance</button>
         </form>
+        {% else %}
+        <p>Please select a course to load enrolled students for attendance.</p>
+        {% endif %}
     </section>
     
     <section>
-        <h2>Attendance Records</h2>
+        <h2>Course Enrollments</h2>
         <table>
-            <tr>
-                <th>Name</th>
-                <th>Date</th>
-                <th>Status</th>
-            </tr>
-            {% for record in history %}
-            <tr>
-                <td>{{ record[0] }}</td>
-                <td>{{ record[1] }}</td>
-                <td>{{ record[2] }}</td>
-            </tr>
+            <tr><th>Student</th><th>Course</th></tr>
+            {% for e in enrollments %}
+            <tr><td>{{ e[0] }}</td><td>{{ e[1] }} ({{ e[2] }})</td></tr>
             {% endfor %}
         </table>
     </section>

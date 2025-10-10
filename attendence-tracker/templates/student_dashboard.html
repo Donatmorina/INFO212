@@ -11,11 +11,13 @@
     <table>
         <tr>
             <th>Date</th>
+            <th>Course</th>
             <th>Status</th>
         </tr>
-        {% for date, status in attendance_history %}
+        {% for date, status, course_name, course_code in attendance_history %}
         <tr>
             <td>{{ date }}</td>
+            <td>{{ course_name }} {% if course_code %}({{ course_code }}){% endif %}</td>
             <td>{{ status }}</td>
         </tr>
         {% endfor %}
