@@ -77,3 +77,4 @@ attendence-tracker/
 - If you change the database schema, delete `attendence.db` and restart the app to recreate it.
 - Passwords are stored in plain text for demonstration purposes. 
 
+- Test
