@@ -7,21 +7,59 @@
 </head>
 <body>
     <h1>Welcome, {{ session['user'] }}</h1>
-    <h2>Your Attendance History</h2>
-    <table>
-        <tr>
-            <th>Date</th>
-            <th>Course</th>
-            <th>Status</th>
-        </tr>
-        {% for date, status, course_name, course_code in attendance_history %}
-        <tr>
-            <td>{{ date }}</td>
-            <td>{{ course_name }} {% if course_code %}({{ course_code }}){% endif %}</td>
-            <td>{{ status }}</td>
-        </tr>
-        {% endfor %}
-    </table>
+
+    <h2>Your Courses</h2>
+    {% if courses %}
+    <form method="GET">
+        <label>
+            Select course:
+            <select name="selected_course" onchange="this.form.submit()">
+                <option value="">-- Select a course --</option>
+                {% for c in courses %}
+                <option value="{{ c[0] }}" {% if selected_course and selected_course == (c[0]|string) %}selected{% endif %}>
+                    {{ c[1] }} {% if c[2] %}({{ c[2] }}){% endif %}
+                </option>
+                {% endfor %}
+            </select>
+        </label>
+    </form>
+    {% else %}
+    <p>You are not enrolled in any courses.</p>
+    {% endif %}
+
+    <h2>Your Attendance</h2>
+    {% if selected_course %}
+        {% if course_info %}
+            <h3>Course info</h3>
+            <p>Total sessions: {{ course_info.total_sessions }}</p>
+            <p>Compulsory sessions: {{ course_info.compulsory_sessions }}</p>
+            <p>Total allowed absences: {{ course_info.allowed_skips }}</p>
+            <p>Your absences: {{ course_info.absences }}</p>
+            <p>Remaining allowed absences: {{ course_info.remaining_skips }}</p>
+        {% endif %}
+
+        {% if attendance_history %}
+        <table>
+            <tr>
+                <th>Date</th>
+                <th>Course</th>
+                <th>Status</th>
+            </tr>
+            {% for date, status, course_name, course_code in attendance_history %}
+            <tr>
+                <td>{{ date }}</td>
+                <td>{{ course_name }} {% if course_code %}({{ course_code }}){% endif %}</td>
+                <td>{{ status }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+        {% else %}
+        <p>No attendance records for the selected course.</p>
+        {% endif %}
+    {% else %}
+    <p>Please select a course above to view attendance.</p>
+    {% endif %}
+
     <a href="{{ url_for('logout') }}">Logout</a>
 </body>
 </html>
