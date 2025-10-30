@@ -14,6 +14,14 @@
         <form method="POST">
             <input type="text" name="course_name" placeholder="Course Name" required>
             <input type="text" name="course_code" placeholder="Course Code" required>
+            <label>
+                Total sessions:
+                <input type="number" name="total_sessions" min="0" value="0" required>
+            </label>
+            <label>
+                Total compulsory:
+                <input type="number" name="compulsory_sessions" min="0" value="0" required>
+            </label>
             <button type="submit">Create Course</button>
         </form>
     </section>
@@ -52,16 +60,27 @@
         </form>
 
         {% if selected_course %}
+        <h3>Course info</h3>
+        {% if course_info %}
+            <p>Total sessions: {{ course_info.total_sessions }}</p>
+            <p>Compulsory sessions: {{ course_info.compulsory_sessions }}</p>
+            <p>Total allowed absences: {{ course_info.allowed_skips }}</p>
+        {% endif %}
+
         <form method="POST">
             <input type="hidden" name="selected_course" value="{{ selected_course }}">
             <label>Date: <input type="date" name="attendance_date" required></label>
             <table>
-                <tr><th>Name</th><th>Status</th></tr>
+                <tr><th>Select</th><th>Name</th><th>Absences</th><th>Remaining allowed absences</th><th>Status</th></tr>
                 {% for s in students %}
                 <tr>
-                    <td>{{ s[1] }}</td>
                     <td>
-                        <input type="hidden" name="student_id" value="{{ s[0] }}">
+                        <input type="checkbox" name="selected_student" value="{{ s[0] }}">
+                    </td>
+                    <td>{{ s[1] }}</td>
+                    <td>{{ s[2] }}</td>
+                    <td>{{ s[3] }}</td>
+                    <td>
                         <select name="status_{{ s[0] }}">
                             <option value="Present">Present</option>
                             <option value="Absent">Absent</option>
