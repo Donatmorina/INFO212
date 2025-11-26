@@ -23,5 +23,7 @@ dist-ssr
 *.sln
 *.sw?
 
-attendence-tracker/attendance.db
-attendance-tracker/venv/
+venv/
+attendence-tracker/attendence.db
+
+.vite/
