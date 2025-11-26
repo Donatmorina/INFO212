@@ -4,7 +4,7 @@ import DashboardTA from "./pages/DashboardTA";
 import DashboardStudent from "./pages/DashboardStudent";
 
 function App() {
-  const [user, setUser] = useState(null); // { id, role }
+  const [user, setUser] = useState(null); 
 
   if (!user) return <LoginPage onLogin={setUser} />;
 

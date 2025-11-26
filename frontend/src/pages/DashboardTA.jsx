@@ -82,8 +82,7 @@ export default function DashboardTA({ user, onLogout }) {
         <h1 className="text-2xl font-semibold">Teaching Assistant Dashboard</h1>
         <div className="flex items-center gap-4">
           <p className="text-sm text-gray-600">
-            Logged in as: <span className="font-medium">{user.role}</span> (ID:{" "}
-            {user.id})
+            Logged in as: <span className="font-medium">{user.role}</span> 
           </p>
           <button
             onClick={onLogout}
@@ -120,6 +119,9 @@ export default function DashboardTA({ user, onLogout }) {
             />
 
             <div className="grid grid-cols-3 gap-3">
+              <p className="col-span-3 text-sm text-gray-600">
+                Total sessions:
+              </p>
               <input
                 type="number"
                 placeholder="Total Sessions"
@@ -130,6 +132,9 @@ export default function DashboardTA({ user, onLogout }) {
                 }
               />
 
+              <p className="col-span-3 text-sm text-gray-600">
+                Required %:
+              </p>
               <input
                 type="number"
                 placeholder="Required %"

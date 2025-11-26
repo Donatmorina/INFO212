@@ -5,11 +5,11 @@ import os
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'
-CORS(app, origins=["http://localhost:5173"])  # allow React frontend
+CORS(app, origins=["http://localhost:5173"]) 
 
 DB_NAME = 'attendence.db'
 
-# ---------- DATABASE SETUP ----------
+# DATABASE SETUP 
 def init_db():
     conn = sqlite3.connect(DB_NAME)
     c = conn.cursor()
@@ -159,7 +159,7 @@ def api_courses():
         return jsonify(courses)
 
 
-#  STUDENTS 
+# STUDENTS 
 @app.route('/api/students', methods=['GET'])
 def api_get_students():
     conn = sqlite3.connect(DB_NAME)
@@ -171,7 +171,7 @@ def api_get_students():
     return jsonify(students)
 
 
-#  ENROLL STUDENT TO COURSE 
+# ENROLL STUDENT TO COURSE 
 @app.route('/api/enroll', methods=['POST'])
 def api_enroll_student():
     data = request.get_json()
@@ -196,7 +196,7 @@ def api_enroll_student():
         return jsonify({"success": False, "message": str(e)}), 500
 
 
-#  STUDENTS IN COURSE 
+# STUDENTS IN COURSE 
 @app.route('/api/course/<int:course_id>/students', methods=['GET'])
 def api_get_course_students(course_id):
     conn = sqlite3.connect(DB_NAME)
@@ -241,7 +241,7 @@ def api_get_student_attendance(student_user_id):
     conn = sqlite3.connect(DB_NAME)
     c = conn.cursor()
 
-    # 1) Finn brukernavn fra users-tabellen (user.id kommer fra login)
+    # Find username in users table
     c.execute('SELECT username FROM users WHERE id=?', (student_user_id,))
     row = c.fetchone()
     if not row:
@@ -250,7 +250,7 @@ def api_get_student_attendance(student_user_id):
 
     username = row[0]
 
-    # 2) Finn student-id fra students-tabellen (kobles på attendance)
+    # Find student-id in students table
     c.execute('SELECT id FROM students WHERE name=?', (username,))
     srow = c.fetchone()
     if not srow:
@@ -259,7 +259,7 @@ def api_get_student_attendance(student_user_id):
 
     real_student_id = srow[0]
 
-    # 3) Hent attendance + course_id
+    # 3) Get attendance + course_id
     c.execute('''
         SELECT a.date,
                a.status,
@@ -330,7 +330,7 @@ def api_course_summary(course_id):
     conn = sqlite3.connect(DB_NAME)
     c = conn.cursor()
 
-    # hent total/compulsory
+    # Get total/compulsory sessions
     c.execute('SELECT total_sessions, compulsory_sessions FROM courses WHERE id=?', (course_id,))
     row = c.fetchone()
     if not row:
@@ -342,11 +342,11 @@ def api_course_summary(course_id):
     compulsory_sessions = compulsory_sessions or 0
     allowed_skips = max(0, total_sessions - compulsory_sessions)
 
-    # hvor mange økter er registrert
+    # Get recorded sessions
     c.execute('SELECT COUNT(DISTINCT date) FROM attendance WHERE course_id=?', (course_id,))
     sessions_recorded = c.fetchone()[0] or 0
 
-    # per student
+    # Get attendance per student
     c.execute('''
         SELECT s.id, s.name,
                SUM(CASE WHEN a.status = 'Present' THEN 1 ELSE 0 END) AS present_count,
@@ -395,8 +395,6 @@ def api_course_summary(course_id):
     })
 
 
-
-# ---------- MAIN ----------
 if __name__ == '__main__':
     init_db()
     app.run(debug=True)

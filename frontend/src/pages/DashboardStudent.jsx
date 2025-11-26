@@ -1,4 +1,3 @@
-// src/pages/DashboardStudent.jsx (for eksempel)
 import { useState, useMemo } from "react";
 import { useStudentHistory } from "../hooks/useStudentHistory";
 import { useCourseSummary } from "../hooks/useCourseSummary";
@@ -66,7 +65,7 @@ export default function DashboardStudent({ user, onLogout }) {
         <div>
           <h1 className="text-2xl font-semibold">Student Dashboard</h1>
           <p className="text-sm text-gray-600">
-            Logged in as student (ID: {user.id})
+            Logged in as student 
           </p>
         </div>
         <button
