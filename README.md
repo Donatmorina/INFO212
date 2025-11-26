@@ -84,18 +84,21 @@ attendence-tracker/
 4. **First-Time Database Setup**  
    The database (`attendence.db`) is created automatically the first time you run the app.
 
-# Frontend Setup (React + Vite)
+## Frontend Setup (React + Vite)
 
-### 1. Open a new terminal window (backend must keep running)
+**1. Open a new terminal window (backend must keep running)**
 
 cd frontend
+```
 
-### 2. Install frontend dependencies
+**2. Install frontend dependencies**
 
 npm install
+```
 
 
-### 3. Start the development server
+**3. Start the development server**
 
 npm run dev
+```
 
