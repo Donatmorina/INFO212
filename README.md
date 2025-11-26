@@ -87,18 +87,16 @@ attendence-tracker/
 ## Frontend Setup (React + Vite)
 
 **1. Open a new terminal window (backend must keep running)**
-
+```
 cd frontend
 ```
-
 **2. Install frontend dependencies**
-
+```
 npm install
 ```
 
-
 **3. Start the development server**
-
+```
 npm run dev
 ```
 
